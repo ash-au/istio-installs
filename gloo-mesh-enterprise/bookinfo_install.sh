@@ -21,6 +21,7 @@ function create_namespaces () {
 }
 
 function setup_workspaces () {
+# Create a bookinfo workspace that spans across all clusters and includes only bookinfo namepsace in each cluster
 kubectl apply --context $MGMT_CONTEXT -f- <<EOF
 apiVersion: admin.gloo.solo.io/v2
 kind: Workspace
@@ -34,6 +35,7 @@ spec:
       - name: bookinfo
 EOF
 
+# Configure bookinfo workspace
 kubectl apply --context $MGMT_CONTEXT -f- <<EOF
 apiVersion: admin.gloo.solo.io/v2
 kind: WorkspaceSettings
