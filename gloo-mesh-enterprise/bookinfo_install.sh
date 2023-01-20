@@ -119,9 +119,9 @@ function install_bookinfo () {
   kubectl --context $REMOTE_CONTEXT2 -n bookinfo apply -f https://raw.githubusercontent.com/istio/istio/$ISTIO_VERSION/samples/bookinfo/platform/kube/bookinfo.yaml -l 'account in (reviews, ratings)'
 }
 
-#create_namespaces
+create_namespaces
 setup_workspaces
-#install_bookinfo
+install_bookinfo
 
 sleep 10
 

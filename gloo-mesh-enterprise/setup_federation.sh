@@ -80,7 +80,7 @@ spec:
               number: 8080
             subset:
               version: v1
-            weight: 15
+            weight: 33
           # Reference to the virtual destination that directs 10% of reviews traffic to reviews-v2 in cluster-1
           - ref:
               name: reviews-vd
@@ -89,7 +89,7 @@ spec:
               number: 8080
             subset:
               version: v2
-            weight: 10
+            weight: 33
           # Reference to the virtual destination that directs 75% of reviews traffic to reviews-v3 in cluster-2
           - ref:
               name: reviews-vd
@@ -98,5 +98,5 @@ spec:
               number: 8080
             subset:
               version: v3
-            weight: 75
+            weight: 34
 EOF
