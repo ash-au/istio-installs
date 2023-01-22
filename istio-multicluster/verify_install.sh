@@ -98,6 +98,8 @@ function enable_proxy_logs() {
 
 #enable_proxy_logs
 
+install_sample_apps
+
 for i in {1..6}; do
     kubectl exec --context="${CTX_CLUSTER1}" -n sample -c sleep \
         "$(kubectl get pod --context="${CTX_CLUSTER1}" -n sample -l \
