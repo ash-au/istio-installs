@@ -12,7 +12,6 @@ export CTX_CLUSTER2=colima-cluster2
 function generate_certs () {
     # Based on Plugin CA Certs istio documentation
     # https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/
-    rm -r certs
     [ ! -d ./certs ] && mkdir -p certs
     pushd certs
     make -f ../istio/tools/certs/Makefile.selfsigned.mk root-ca
