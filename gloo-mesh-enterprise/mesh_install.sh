@@ -3,7 +3,8 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Set environment variables
-export GLOO_VERSION=2.1.4
+#export GLOO_VERSION=2.1.4
+export GLOO_VERSION=2.2
 export MGMT_CLUSTER=colima-mgmt
 export REMOTE_CLUSTER1=colima-cluster1
 export REMOTE_CLUSTER2=colima-cluster2
@@ -45,8 +46,8 @@ function install_gloo_mgmt() {
     --set licenseKey=$GLOO_MESH_LICENSE_KEY \
     --values values-mgmt-plane-env.yaml
 
+    mkdir tmp
     mv values* ./tmp
-
 }
 
 #function install_gloo_agent (remote_cluster, remote_context) {

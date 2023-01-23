@@ -3,7 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Set environment variables
-export GLOO_VERSION=2.1.4
+export GLOO_VERSION=2.2
 export MGMT_CLUSTER=colima-mgmt
 export REMOTE_CLUSTER1=colima-cluster1
 export REMOTE_CLUSTER2=colima-cluster2
