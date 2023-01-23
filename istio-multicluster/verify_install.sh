@@ -20,6 +20,7 @@ function install_sample_apps() {
 
     p2c
     # 2. Enable automatic sidecar injection
+    # This will need to change to discovery selectors https://istio.io/latest/blog/2021/discovery-selectors/
     kubectl label --context="${CTX_CLUSTER1}" namespace sample istio-injection=enabled
     kubectl label --context="${CTX_CLUSTER2}" namespace sample istio-injection=enabled
 
@@ -98,7 +99,21 @@ function enable_proxy_logs() {
 
 #enable_proxy_logs
 
-install_sample_apps
+function check_lb () {
+    hwpodname=$(kubectl --context="${CTX_CLUSTER1}" -n sample get pods -l app=sleep -o jsonpath='{.items[0].metadata.name}')
+    echo $hwpodname
+    # Basically this should be load balancing between local service (cluster) ip
+    istioctl --context ${CTX_CLUSTER1} proxy-config endpoints -n sample $hwpodname --cluster "outbound|5000||helloworld.sample.svc.cluster.local"
+
+    hwpodname=$(kubectl --context="${CTX_CLUSTER2}" -n sample get pods -l app=sleep -o jsonpath='{.items[0].metadata.name}')
+    echo $hwpodname
+    # Basically this should be load balancing between local service (cluster) ip
+    istioctl --context ${CTX_CLUSTER2}  proxy-config endpoints -n sample $hwpodname --cluster "outbound|5000||helloworld.sample.svc.cluster.local"
+}
+
+#install_sample_apps
+
+check_lb
 
 for i in {1..6}; do
     kubectl exec --context="${CTX_CLUSTER1}" -n sample -c sleep \
