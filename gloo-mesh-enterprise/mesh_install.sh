@@ -12,18 +12,6 @@ export MGMT_CONTEXT=colima-mgmt
 export REMOTE_CONTEXT1=colima-cluster1
 export REMOTE_CONTEXT2=colima-cluster2
 
-function delete_clusters() {
-    colima delete -f cluster1
-    colima delete -f cluster2
-    colima delete -f mgmt
-}
-
-function install_clusters() {
-    colima start --cpu 4 --memory 8 --kubernetes --kubernetes-version v1.23.15-rc3+k3s1 --kubernetes-disable traefik -p mgmt --network-address
-    colima start --cpu 4 --memory 8 --kubernetes --kubernetes-version v1.23.15-rc3+k3s1 --kubernetes-disable traefik -p cluster1 --network-address
-    colima start --cpu 4 --memory 8 --kubernetes --kubernetes-version v1.23.15-rc3+k3s1 --kubernetes-disable traefik -p cluster2 --network-address
-}
-
 function install_gloo_mgmt() {
     # First update helm
     helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
@@ -90,10 +78,6 @@ EOF
     mv values* ./tmp
 }
 
-delete_clusters
-sleep 10
-install_clusters
-sleep 10
 install_gloo_mgmt 
 #It takes about a minute for server to come up
 sleep 60
