@@ -61,3 +61,5 @@ function install_sample_apps() {
     kubectl get pod --context="${CTX_CLUSTER1}" -n sample -l app=sleep
     kubectl get pod --context="${CTX_CLUSTER2}" -n sample -l app=sleep
 }
+
+install_sample_apps
