@@ -142,7 +142,7 @@ function label_nodes () {
 install_gloo_mgmt 
 #It takes about a minute for server to come up
 sleep 60
-#setup_workspaces
+setup_workspaces
 
 # Get management server address
 MGMT_SERVER_NETWORKING_DOMAIN=$(kubectl get svc -n gloo-mesh gloo-mesh-mgmt-server --context $MGMT_CONTEXT -o jsonpath='{.status.loadBalancer.ingress[0].ip}')

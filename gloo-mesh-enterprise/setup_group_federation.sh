@@ -119,6 +119,7 @@ EOF
 
 # Create an istio-system workspace that spans across clusters, and includes istio-system and gloo-mesh-gateways namespaces in each cluster.
 # This ensures that the istiod control plane components as well as gateways are included in the same workspace
+kubectl create ns istio-system --context $MGMT_CONTEXT
 kubectl apply --context $MGMT_CONTEXT -f- <<EOF
 apiVersion: admin.gloo.solo.io/v2
 kind: Workspace
@@ -130,7 +131,6 @@ spec:
     - name: '*'
       namespaces:
       - name: istio-system
-      - name: gloo-mesh-gateways
 EOF
 
 # And configure settings for it
