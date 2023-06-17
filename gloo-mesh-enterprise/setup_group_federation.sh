@@ -3,7 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Set environment variables
-export GLOO_VERSION=2.2
+export GLOO_VERSION="2.3.5"
 export MGMT_CLUSTER=colima-mgmt
 export REMOTE_CLUSTER1=colima-cluster1
 export REMOTE_CLUSTER2=colima-cluster2
@@ -11,7 +11,10 @@ export MGMT_CONTEXT=colima-mgmt
 export REMOTE_CONTEXT1=colima-cluster1
 export REMOTE_CONTEXT2=colima-cluster2
 
-export ISTIO_VERSION=1.16.1
+export ISTIO_VERSION=1.17.2
+export REPO=$GLOO_REPO_KEY
+export ISTIO_IMAGE=1.17.2-solo
+export REVISION=1-17-2
 
 # Create a Gloo Mesh root trust policy to ensure that services in cluster-1 securely communicate with the reviews service in cluster-2.
 # The root trust policy sets up the domain and certificates to establish a shared trust model across multiple clusters in your service mesh.
@@ -49,9 +52,7 @@ spec:
         app: reviews
 EOF
 
-# Create a routetable that defines how east-west requests within your mesh from productpage service to the reviews-vd virtual destination should be routed
-# For hosts, specify reviews.bookinfo.svc.cluster.local, which is the actual internal hostname that the reviews app listens on
-## Ths EW gateway does the work of routing requests for "reviews.bookinfo.svc.cluster.local" to "reviews.mesh.internal.com"
+# Create a route table that defines how east-west requests within your mesh are routed from the productpage service to the reviews-vd virtual destination. When you apply this route table, requests from productpage to /reviews now route to one of the three reviews versions across clusters. The east-west gateway in your mesh does the work of taking requests made to the reviews.bookinfo.svc.cluster.local hostname and routing them to the reviews.mesh.internal.com virtual destination hostname that you specified in the previous step
 kubectl apply --context $MGMT_CONTEXT -n bookinfo -f- <<EOF
 apiVersion: networking.gloo.solo.io/v2
 kind: RouteTable
@@ -72,31 +73,89 @@ spec:
           prefix: /reviews
       forwardTo:
         destinations:
-          # Reference to the virtual destination that directs 15% of reviews traffic to reviews-v1 in cluster-1
           - ref:
               name: reviews-vd
             kind: VIRTUAL_DESTINATION
             port:
               number: 8080
-            subset:
-              version: v1
-            weight: 33
-          # Reference to the virtual destination that directs 10% of reviews traffic to reviews-v2 in cluster-1
-          - ref:
-              name: reviews-vd
-            kind: VIRTUAL_DESTINATION
-            port:
-              number: 8080
-            subset:
-              version: v2
-            weight: 33
-          # Reference to the virtual destination that directs 75% of reviews traffic to reviews-v3 in cluster-2
-          - ref:
-              name: reviews-vd
-            kind: VIRTUAL_DESTINATION
-            port:
-              number: 8080
-            subset:
-              version: v3
-            weight: 34
+      labels: 
+        route: reviews
+EOF
+
+# Create a bookinfo workspace that spans across all your clusters, and includes only the bookinfo namespaces in each cluster. Note that you must create the workspace resource in the gloo-mesh namespace of the management cluster.
+kubectl apply --context $MGMT_CONTEXT -f- <<EOF
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  name: bookinfo
+  namespace: gloo-mesh
+spec:
+  workloadClusters:
+    - name: '*'
+      namespaces:
+      - name: bookinfo
+EOF
+
+# Configure settings for bookinfo workspace
+kubectl apply --context $MGMT_CONTEXT -f- <<EOF
+apiVersion: admin.gloo.solo.io/v2
+kind: WorkspaceSettings
+metadata:
+  name: bookinfo-settings
+  namespace: bookinfo
+spec:
+  exportTo:
+  - workspaces:  
+    - name: istio-system
+  options:
+    serviceIsolation:
+      enabled: true
+    federation:
+      enabled: false
+      serviceSelector:
+        - {}
+      hostSuffix: 'global'
+EOF
+
+# Create an istio-system workspace that spans across clusters, and includes istio-system and gloo-mesh-gateways namespaces in each cluster.
+# This ensures that the istiod control plane components as well as gateways are included in the same workspace
+kubectl apply --context $MGMT_CONTEXT -f- <<EOF
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  name: istio-system
+  namespace: gloo-mesh
+spec:
+  workloadClusters:
+    - name: '*'
+      namespaces:
+      - name: istio-system
+      - name: gloo-mesh-gateways
+EOF
+
+# And configure settings for it
+kubectl apply --context $MGMT_CONTEXT -f- <<EOF
+apiVersion: admin.gloo.solo.io/v2
+kind: WorkspaceSettings
+metadata:
+  name: istio-system-settings
+  namespace: istio-system
+spec:
+  importFrom:
+  - workspaces:
+    - name: bookinfo
+EOF
+
+# Modify the default workspace to become a management only workspace
+kubectl apply --context $MGMT_CONTEXT -f- <<EOF
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  name: $MGMT_CLUSTER
+  namespace: gloo-mesh
+spec:
+  workloadClusters:
+    - name: '$MGMT_CLUSTER'
+      namespaces:
+        - name: 'gloo-mesh'
 EOF

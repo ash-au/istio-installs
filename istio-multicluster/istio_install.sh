@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail
+#set -euxo pipefail
 IFS=$'\n\t'
 
 # Set environment variables
@@ -9,7 +9,8 @@ export CTX_CLUSTER2=colima-cluster2
 function install_istio_on_cluster () {
 
     # Based on https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/
-    kctx="colima-cluster$1"
+    kctx=$CTX_CLUSTER1
+    [ $1 -eq 2 ] && kctx=$CTX_CLUSTER2
     echo $kctx
     kubectl --context="${kctx}" get namespace istio-system && \
     kubectl --context="${kctx}" label namespace istio-system topology.istio.io/network=network$1 --overwrite
@@ -31,7 +32,7 @@ EOF
     # Install east-west gateway
     # East West gateway may not work with standard config as it uses the same healthcheck port as ingress gateway 
     # We'll have to modify east-west gateway configuration
-    # This may be a colima limitation onl
+    # This may be a colima limitation only
     #./istio/samples/multicluster/gen-eastwest-gateway.sh --network network1 | istioctl --context="${kctx}" install -y -f -
     ./istio/samples/multicluster/gen-eastwest-gateway.sh --network network$1 > ew-gw.yaml
     
