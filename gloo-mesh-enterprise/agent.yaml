@@ -1,0 +1,4 @@
+glooAgent:
+  enabled: true
+telemetryCollector:
+  enabled: true

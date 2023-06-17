@@ -1,0 +1,18 @@
+common:
+  cluster: colima-mgmt
+glooMgmtServer:
+  enabled: true
+  ports:
+    healthcheck: 8091
+glooUi:
+  enabled: true
+  serviceType: LoadBalancer
+prometheus:
+  enabled: true
+redis:
+  deployment:
+    enabled: true
+telemetryGateway:
+  enabled: true
+  service:
+    type: LoadBalancer
