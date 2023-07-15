@@ -26,9 +26,10 @@ spec:
 EOF
 
   # Check and Create namespace
-  if [ ! $(kubectl --context ${CLUSTER} get ns | grep gloo-mesh) ]; then
-    kubectl --context ${CLUSTER} create ns gloo-mesh
-  fi
+  # if [ ! $(kubectl --context ${CLUSTER} get ns | grep gloo-mesh) ]; then
+  #   kubectl --context ${CLUSTER} create ns gloo-mesh
+  # fi
+  create_ns ${CLUSTER} gloo-mesh
 
   if [ ! $(kubectl get secret -n gloo-mesh --context ${CLUSTER} | grep relay-root-tls-secret) ]; then
     kubectl get secret relay-root-tls-secret -n gloo-mesh --context ${MGMT} -o jsonpath='{.data.ca\.crt}' | base64 -d >ca.crt

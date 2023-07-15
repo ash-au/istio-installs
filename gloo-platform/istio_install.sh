@@ -10,9 +10,10 @@ export ISTIO_IMAGE=1.17.2-solo
 export REVISION=1-17
 
 function create_services() {
-  if [ ! $(kubectl --context ${CLUSTER} get ns | grep istio-gateways) ]; then
-    kubectl --context ${CLUSTER} create ns istio-gateways
-  fi
+  # if [ ! $(kubectl --context ${CLUSTER} get ns | grep istio-gateways) ]; then
+  #   kubectl --context ${CLUSTER} create ns istio-gateways
+  # fi
+  create_ns ${CLUSTER} istio-gateways
   kubectl --context ${CLUSTER} label namespace istio-gateways istio.io/rev=${REVISION} --overwrite
   # Deploy gloo mesh lifecycle manager
   kubectl apply --context ${CLUSTER} -f - <<EOF

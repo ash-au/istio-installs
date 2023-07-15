@@ -10,7 +10,8 @@ helm repo add gloo-platform https://storage.googleapis.com/gloo-platform/helm-ch
 helm repo update
 
 # Install Gloo Platform
-kubectl --context ${MGMT} create ns gloo-mesh
+create_ns ${MGMT} gloo-mesh
+#kubectl --context ${MGMT} create ns gloo-mesh
 helm upgrade --install gloo-platform-crds gloo-platform/gloo-platform-crds \
 --namespace gloo-mesh \
 --kube-context ${MGMT} \
@@ -42,6 +43,7 @@ glooUi:
   serviceType: LoadBalancer
 EOF
 kubectl --context ${MGMT} -n gloo-mesh rollout status deploy/gloo-mesh-mgmt-server
+kubectl --context ${MGMT} -n gloo-mesh rollout status deploy/gloo-mesh-ui
 
 # Get environment variables
 export ENDPOINT_GLOO_MESH=$(kubectl --context ${MGMT} -n gloo-mesh get svc gloo-mesh-mgmt-server -o jsonpath='{.status.loadBalancer.ingress[0].*}'):9900

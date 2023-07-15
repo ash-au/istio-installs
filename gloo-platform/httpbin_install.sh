@@ -13,7 +13,8 @@ export REVISION=$(kubectl get pod -L app=istiod -n istio-system --context $REMOT
 echo $REVISION
 
 # Deploy httpbin not-in-mesh
-kubectl --context ${CLUSTER1} create ns httpbin
+# kubectl --context ${CLUSTER1} create ns httpbin
+create_ns ${CLUSTER1} httpbin
 kubectl apply --context ${CLUSTER1} -f - <<EOF
 apiVersion: v1
 kind: ServiceAccount

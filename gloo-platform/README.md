@@ -10,5 +10,5 @@
 8. workspace_setup.sh
 9. bookinfo_expose.sh
 10. create_root_trust.sh
-11. 
+11. setup_vd.sh
 
