@@ -11,4 +11,7 @@
 9. bookinfo_expose.sh
 10. create_root_trust.sh
 11. setup_vd.sh
-
+12. setup_observability.sh
+13. httpbin_workspace.sh
+14. httpbin_expose.sh
+15. `extauth/setup_apikey.sh` to setup API key authentication on httpbin workspace

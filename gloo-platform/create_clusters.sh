@@ -15,6 +15,10 @@ function install_clusters() {
     kubectl ctx cluster1=colima-cluster1
     kubectl ctx cluster2=colima-cluster2
 
+    sleep 5
+    kubernetes --context cluster1 label nodes --all topology.kubernetes.io/region=sydney --overwrite
+    kubernetes --context cluster2 label nodes --all topology.kubernetes.io/region=melb --overwrite
+
     kubectl config use-context mgmt
 }
 

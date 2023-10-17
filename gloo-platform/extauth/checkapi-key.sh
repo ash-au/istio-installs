@@ -1,0 +1,1 @@
+https --verify=no 192.168.106.7/get "api-key: N2YwMDIxZTEtNGUzNS1jNzgzLTRkYjAtYjE2YzRkZGVmNjcy"

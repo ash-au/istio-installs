@@ -5,9 +5,6 @@ IFS=$'\n\t'
 # Set environment variables
 source env.sh
 
-export ISTIO_VERSION=1.17.2
-export REPO=$GLOO_REPO_KEY
-export ISTIO_IMAGE=1.17.2-solo
 # Get deployed istio revision
 export REVISION=$(kubectl get pod -L app=istiod -n istio-system --context $REMOTE_CONTEXT1 -o jsonpath='{.items[0].metadata.labels.istio\.io/rev}')
 echo $REVISION
@@ -22,7 +19,7 @@ metadata:
     allow_ingress: "true"
 spec:
   workloadClusters:
-  - name: cluster1
+  - name: ${CLUSTER1}
     namespaces:
     - name: httpbin
 EOF

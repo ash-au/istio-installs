@@ -5,10 +5,6 @@ IFS=$'\n\t'
 ## Set environment variables
 source env.sh
 
-export REPO=$GLOO_REPO_KEY
-export ISTIO_IMAGE=1.17.2-solo
-export REVISION=1-17
-
 function create_services() {
   # if [ ! $(kubectl --context ${CLUSTER} get ns | grep istio-gateways) ]; then
   #   kubectl --context ${CLUSTER} create ns istio-gateways
