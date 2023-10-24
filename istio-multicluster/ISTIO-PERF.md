@@ -15,5 +15,6 @@ Specifically focussing on these areas
 
 Additional information
 - Istio's performance and scalibility information https://istio.io/latest/docs/ops/deployment/performance-and-scalability/
-- https://www.solo.io/blog/envoy-at-scale-with-gloo-edge/
+- Running Envoy ar scale https://www.solo.io/blog/envoy-at-scale-with-gloo-edge/
 - Tetrate has some information on their blog here https://tetrate.io/blog/performance-optimization-for-istio
+- Ambient Mesh performance https://www.solo.io/blog/reduce-cloud-cost-istio-ambient-mesh/ 
