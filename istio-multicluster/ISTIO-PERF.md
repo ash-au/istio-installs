@@ -19,3 +19,7 @@ Additional information
 - Tetrate has some information on their blog here https://tetrate.io/blog/performance-optimization-for-istio
 - Ambient Mesh performance https://www.solo.io/blog/reduce-cloud-cost-istio-ambient-mesh/
 - https://discuss.istio.io/t/need-to-understand-memory-consumption-of-istio-proxy-container/13437
+- https://www.godaddy.com/engineering/2022/10/25/chasing-runaway-memory-usage-in-istio-sidecars/
+- https://medium.com/geekculture/watch-out-for-this-istio-proxy-sidecar-memory-pitfall-8dbd99ea7e9d
+- https://techblog.cisco.com/blog/istio-sidecar
+- 
