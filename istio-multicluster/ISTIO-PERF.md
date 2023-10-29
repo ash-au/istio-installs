@@ -14,6 +14,7 @@ Specifically focussing on these areas
 
 
 Additional information
+- https://www.youtube.com/watch?v=JcfLUHdntN4
 - Istio's performance and scalibility information https://istio.io/latest/docs/ops/deployment/performance-and-scalability/
 - Running Envoy ar scale https://www.solo.io/blog/envoy-at-scale-with-gloo-edge/
 - Tetrate has some information on their blog here https://tetrate.io/blog/performance-optimization-for-istio
@@ -22,4 +23,4 @@ Additional information
 - https://www.godaddy.com/engineering/2022/10/25/chasing-runaway-memory-usage-in-istio-sidecars/
 - https://medium.com/geekculture/watch-out-for-this-istio-proxy-sidecar-memory-pitfall-8dbd99ea7e9d
 - https://techblog.cisco.com/blog/istio-sidecar
-- 
+
