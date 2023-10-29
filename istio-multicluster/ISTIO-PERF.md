@@ -17,4 +17,5 @@ Additional information
 - Istio's performance and scalibility information https://istio.io/latest/docs/ops/deployment/performance-and-scalability/
 - Running Envoy ar scale https://www.solo.io/blog/envoy-at-scale-with-gloo-edge/
 - Tetrate has some information on their blog here https://tetrate.io/blog/performance-optimization-for-istio
-- Ambient Mesh performance https://www.solo.io/blog/reduce-cloud-cost-istio-ambient-mesh/ 
+- Ambient Mesh performance https://www.solo.io/blog/reduce-cloud-cost-istio-ambient-mesh/
+- https://discuss.istio.io/t/need-to-understand-memory-consumption-of-istio-proxy-container/13437
