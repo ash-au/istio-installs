@@ -15,30 +15,40 @@ function install_istio_on_cluster () {
     kubectl --context="${kctx}" get namespace istio-system && \
     kubectl --context="${kctx}" label namespace istio-system topology.istio.io/network=network$1 --overwrite
 
-    cat <<EOF > cluster$1.yaml
+    cat <<EOF > tmp/cluster$1.yaml
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 spec:
     values:
         global:
-            meshID: mesh$1
+            meshID: mesh1
             multiCluster:
                 clusterName: cluster$1
             network: network$1
+    meshConfig:
+        accessLogFile: /dev/stdout
+        defaultConfig:
+            proxyMetadata:
+                # Enable basic DNS proxying
+                ISTIO_META_DNS_CAPTURE: "true"
+                # Enable automatic address allocation, optional
+                ISTIO_META_DNS_AUTO_ALLOCATE: "true"
 EOF
     # Install Istio
-    istioctl install --context="${kctx}" -f cluster$1.yaml -y
+    istioctl install --context="${kctx}" -f tmp/cluster$1.yaml -y
 
     # Install east-west gateway
     # East West gateway may not work with standard config as it uses the same healthcheck port as ingress gateway 
     # We'll have to modify east-west gateway configuration
     # This may be a colima limitation only
     #./istio/samples/multicluster/gen-eastwest-gateway.sh --network network1 | istioctl --context="${kctx}" install -y -f -
-    ./istio/samples/multicluster/gen-eastwest-gateway.sh --network network$1 > ew-gw.yaml
+    #./istio/samples/multicluster/gen-eastwest-gateway.sh --network network$1 > ew-gw.yaml
+    ./istio/samples/multicluster/gen-eastwest-gateway.sh \
+    --mesh mesh1 --cluster cluster$1 --network network$1 > tmp/ew-gw$1.yaml
     
-    gsed -i "s/15021/15022/g" ew-gw.yaml
+    gsed -i "s/15021/15022/g" tmp/ew-gw$1.yaml
 
-    istioctl install --context "${kctx}" -f ew-gw.yaml -y
+    istioctl install --context "${kctx}" -f tmp/ew-gw$1.yaml -y
     # Check status of east-west gateway
     sleep 20
     kubectl --context="${kctx}" get svc istio-eastwestgateway -n istio-system
@@ -47,9 +57,9 @@ EOF
 }
 
 function enable_endpoint_discovery () {
-    istioctl x create-remote-secret --context="${CTX_CLUSTER1}" --name=cluster1 | kubectl apply -f - --context="${CTX_CLUSTER2}"
+    istioctl create-remote-secret --context="${CTX_CLUSTER1}" --name=cluster1 | kubectl apply -f - --context="${CTX_CLUSTER2}"
 
-    istioctl x create-remote-secret --context="${CTX_CLUSTER2}" --name=cluster2 | kubectl apply -f - --context="${CTX_CLUSTER1}"
+    istioctl create-remote-secret --context="${CTX_CLUSTER2}" --name=cluster2 | kubectl apply -f - --context="${CTX_CLUSTER1}"
 }
 
 install_istio_on_cluster 1

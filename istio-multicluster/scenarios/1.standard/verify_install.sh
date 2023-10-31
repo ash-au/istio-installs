@@ -59,6 +59,7 @@ function check_lb () {
 
 check_lb
 
+echo "invoking from cluster1"
 for i in {1..6}; do
     kubectl exec --context="${CTX_CLUSTER1}" -n sample -c sleep \
         "$(kubectl get pod --context="${CTX_CLUSTER1}" -n sample -l \
@@ -66,6 +67,7 @@ for i in {1..6}; do
         -- curl -sS helloworld.sample:5000/hello
 done
 
+echo "invoking from cluster2"
 for i in {1..6}; do
     kubectl exec --context="${CTX_CLUSTER2}" -n sample -c sleep \
         "$(kubectl get pod --context="${CTX_CLUSTER2}" -n sample -l \
